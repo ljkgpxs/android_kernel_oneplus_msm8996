@@ -534,11 +534,12 @@ int msm_spm_drv_set_vdd(struct msm_spm_driver_data *dev, unsigned int vlevel)
 	timeout_us = dev->vctl_timeout_us;
 	/* Confirm the voltage we set was what hardware sent */
 	do {
-        udelay(1);
+		udelay(1);
 		new_level = msm_spm_drv_get_sts_curr_pmic_data(dev);
-        if (((new_level & 0x30000) == 0) &&
-                ((new_level & 0xFF) == vlevel))
-            break;
+		/* FSM is idle */
+		if (((new_level & 0x30000) == 0) &&
+				((new_level & 0xFF) == vlevel))
+			break;
 	} while (--timeout_us);
 	if (!timeout_us) {
 		pr_info("Wrong level %#x\n", new_level);
