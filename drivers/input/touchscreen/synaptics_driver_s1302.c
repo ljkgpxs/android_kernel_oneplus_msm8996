@@ -2161,8 +2161,7 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	CURRENT_FIRMWARE_ID = (buf[0]<<24) | (buf[1]<<16) | (buf[2]<<8) | buf[3];
 	TPD_ERR("CURRENT_FIRMWARE_ID = 0x%x\n", CURRENT_FIRMWARE_ID);
     sprintf(ts->fw_id,"0x%x",CURRENT_FIRMWARE_ID);
-
-	memset(ts->fw_name,0,TP_FW_NAME_MAX_LEN);
+	memset(ts->fw_name,TP_FW_NAME_MAX_LEN,0);
 	strcpy(ts->fw_name,"tp/fw_synaptics_touchkey.img");
 	TPD_DEBUG("synatpitcs_fw: fw_name = %s \n",ts->fw_name);
 
@@ -2231,7 +2230,6 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 		register_remote_device_s1302(premote_data);
     }
 #endif
-
 	ret = input_register_handler(&synaptics_input_handler);
 	if (ret)
 		TPD_ERR("%s: Failed to register input handler\n", __func__);

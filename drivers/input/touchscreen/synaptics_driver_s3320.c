@@ -1690,6 +1690,7 @@ static ssize_t tp_gesture_write_func(struct file *file, const char __user *buffe
 #ifdef WAKE_GESTURES
 	gestures_enable();
 #else
+
 	if(DouTap_gesture||Circle_gesture||UpVee_gesture||LeftVee_gesture\
         ||RightVee_gesture||DouSwip_gesture)
 	{
@@ -1700,6 +1701,7 @@ static ssize_t tp_gesture_write_func(struct file *file, const char __user *buffe
         ts->gesture_enable = 0;
     }
 #endif
+
 	return count;
 }
 static ssize_t coordinate_proc_read_func(struct file *file, char __user *user_buf, size_t count, loff_t *ppos)
@@ -2525,6 +2527,7 @@ static int	synaptics_input_init(struct synaptics_ts_data *ts)
 	set_bit(BTN_TOOL_FINGER, ts->input_dev->keybit);
 #ifdef SUPPORT_GESTURE
 	set_bit(KEY_F4 , ts->input_dev->keybit);//doulbe-tap resume
+
 #ifdef WAKE_GESTURES
 	set_bit(KEY_POWER, ts->input_dev->keybit);
 	input_set_capability(ts->input_dev, EV_KEY, KEY_POWER);
@@ -4139,8 +4142,8 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	TP_FW = CURRENT_FIRMWARE_ID;
 	sprintf(ts->fw_id,"0x%x",TP_FW);
 
-	memset(ts->fw_name,0,TP_FW_NAME_MAX_LEN);
-	memset(ts->test_limit_name,0,TP_FW_NAME_MAX_LEN);
+	memset(ts->fw_name,TP_FW_NAME_MAX_LEN,0);
+	memset(ts->test_limit_name,TP_FW_NAME_MAX_LEN,0);
 
 	//sprintf(ts->manu_name, "TP_SYNAPTICS");
 	synaptics_rmi4_i2c_read_block(ts->client, F01_RMI_QUERY11,10, ts->manu_name);
@@ -4551,9 +4554,10 @@ static int fb_notifier_callback(struct notifier_block *self, unsigned long event
 		blank = evdata->data;
         TPD_DEBUG("%s blank[%d],event[0x%lx]\n", __func__,*blank,event);
 
+
 		if((*blank == FB_BLANK_UNBLANK /*|| *blank == FB_BLANK_VSYNC_SUSPEND || *blank == FB_BLANK_NORMAL*/)\
             //&& (event == FB_EVENT_BLANK ))
-            && (event == FB_EARLY_EVENT_BLANK ))
+	    && (event == FB_EARLY_EVENT_BLANK ))
         {
             if (ts->is_suspended == 1)
             {
